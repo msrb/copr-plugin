@@ -40,6 +40,8 @@ import hudson.tasks.BatchFile;
 import hudson.tasks.Shell;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -106,7 +108,8 @@ public class CoprPlugin extends Notifier {
 		}
 
 		EnvVars env = build.getEnvironment(listener);
-		String srpmurl = env.expand(srpm);
+		String srpmstr = env.expand(srpm);
+		URL srpmurl = getSrpmUrl(build, listener);
 
 		Copr copr = new Copr(apiurl);
 
@@ -115,7 +118,7 @@ public class CoprPlugin extends Notifier {
 			CoprRepo repo = user.getRepo(coprname);
 
 			List<String> srpms = new ArrayList<String>();
-			srpms.add(srpmurl);
+			srpms.add(srpmurl.toString());
 			repo.addNewBuild(srpms);
 
 			listener.getLogger().println("New Copr job has been scheduled");
@@ -138,6 +141,25 @@ public class CoprPlugin extends Notifier {
 
 		return shell.perform(build, launcher, listener) ? Result.SUCCESS
 				: Result.FAILURE;
+	}
+
+	private URL getSrpmUrl(AbstractBuild<?, ?> build, BuildListener listener)
+			throws IOException, InterruptedException {
+
+		URL url;
+		try {
+			url = new URL(srpm);
+		} catch (MalformedURLException e) {
+			String jobUrl = build.getEnvironment(listener).get("JOB_URL");
+			if (jobUrl == null) {
+				// something's really wrong
+				throw new AssertionError("JOB_URL is not specified");
+			}
+			url = new URL(jobUrl);
+			url = new URL(url, srpm);
+		}
+
+		return url;
 	}
 
 	public BuildStepMonitor getRequiredMonitorService() {
