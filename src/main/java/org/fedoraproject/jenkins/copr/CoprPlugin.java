@@ -111,7 +111,7 @@ public class CoprPlugin extends Notifier {
 
 		EnvVars env = build.getEnvironment(listener);
 		String srpmstr = env.expand(srpm);
-		URL srpmurl = getSrpmUrl(build, listener);
+		URL srpmurl = getSrpmUrl(srpmstr, build, listener);
 
 		Copr copr = new Copr(apiurl);
 
@@ -145,12 +145,12 @@ public class CoprPlugin extends Notifier {
 				: Result.FAILURE;
 	}
 
-	private URL getSrpmUrl(AbstractBuild<?, ?> build, BuildListener listener)
-			throws IOException, InterruptedException {
+	private URL getSrpmUrl(String srpmurl, AbstractBuild<?, ?> build,
+			BuildListener listener) throws IOException, InterruptedException {
 
 		URL url;
 		try {
-			url = new URL(srpm);
+			url = new URL(srpmurl);
 		} catch (MalformedURLException e) {
 			// TODO: what's wrong with JOB_URL?
 			String jenkinsUrl = build.getEnvironment(listener).get(
@@ -165,7 +165,7 @@ public class CoprPlugin extends Notifier {
 								String.valueOf(jobName)));
 			}
 			url = new URL(jenkinsUrl + "/job/" + jobName + "/ws/");
-			url = new URL(url, srpm);
+			url = new URL(url, srpmurl);
 		}
 
 		return url;
