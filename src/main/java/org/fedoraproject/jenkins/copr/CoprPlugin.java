@@ -28,6 +28,7 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
@@ -75,6 +76,12 @@ public class CoprPlugin extends Notifier {
 
 		listener.getLogger().println("Running Copr plugin");
 
+		if (build.getResult() != Result.SUCCESS) {
+			listener.getLogger().println(
+					"Build was unsuccessful. Nothing to build in Copr.");
+			return true;
+		}
+
 		EnvVars env = build.getEnvironment(listener);
 		String srpmurl = env.expand(srpm);
 
@@ -88,7 +95,7 @@ public class CoprPlugin extends Notifier {
 			srpms.add(srpmurl);
 			repo.addNewBuild(srpms);
 
-			listener.getLogger().println("New Copr job scheduled");
+			listener.getLogger().println("New Copr job has been scheduled");
 		} catch (CoprException e) {
 			listener.getLogger().println(e);
 			return false;
