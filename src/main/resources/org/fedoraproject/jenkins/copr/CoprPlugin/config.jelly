@@ -22,4 +22,8 @@
   <f:entry title="SRPM URL" field="srpm">
     <f:textbox />
   </f:entry>
+
+  <f:entry title="Build SRPM" field="srpmscript">
+    <f:textarea />
+  </f:entry>
 </j:jelly>

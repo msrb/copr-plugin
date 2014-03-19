@@ -33,8 +33,11 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.CommandInterpreter;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
+import hudson.tasks.BatchFile;
+import hudson.tasks.Shell;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,16 +61,18 @@ public class CoprPlugin extends Notifier {
 	private final String apilogin;
 	private final String apitoken;
 	private final String apiurl;
+	private final String srpmscript;
 
 	@DataBoundConstructor
 	public CoprPlugin(String coprname, String username, String srpm,
-			String apilogin, String apitoken, String apiurl) {
+			String apilogin, String apitoken, String apiurl, String srpmscript) {
 		this.coprname = coprname;
 		this.username = username;
 		this.srpm = srpm;
 		this.apilogin = apilogin;
 		this.apitoken = apitoken;
 		this.apiurl = apiurl;
+		this.srpmscript = srpmscript;
 	}
 
 	@Override
@@ -84,6 +89,14 @@ public class CoprPlugin extends Notifier {
 			listener.getLogger().println(
 					"Build was unsuccessful. Nothing to build in Copr.");
 			return true;
+		}
+
+		Result srpmres = prepareSRPM(build, launcher, listener);
+
+		listener.getLogger().println("Copr plugin: " + srpmres.toString());
+
+		if (srpmres != Result.SUCCESS) {
+			return false;
 		}
 
 		EnvVars env = build.getEnvironment(listener);
@@ -106,6 +119,19 @@ public class CoprPlugin extends Notifier {
 		}
 
 		return true;
+	}
+
+	private Result prepareSRPM(AbstractBuild<?, ?> build, Launcher launcher,
+			BuildListener listener) throws InterruptedException {
+		CommandInterpreter shell;
+		if (launcher.isUnix()) {
+			shell = new Shell(srpmscript);
+		} else {
+			shell = new BatchFile(srpmscript);
+		}
+
+		return shell.perform(build, launcher, listener) ? Result.SUCCESS
+				: Result.FAILURE;
 	}
 
 	public BuildStepMonitor getRequiredMonitorService() {
@@ -134,6 +160,10 @@ public class CoprPlugin extends Notifier {
 
 	public String getApiurl() {
 		return apiurl;
+	}
+
+	public String getSrpmscript() {
+		return srpmscript;
 	}
 
 	@Extension
