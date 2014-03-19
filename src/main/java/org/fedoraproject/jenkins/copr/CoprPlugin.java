@@ -74,6 +74,10 @@ public class CoprPlugin extends Notifier {
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
 			BuildListener listener) throws InterruptedException, IOException {
 
+		// TODO:
+		// create repository in Copr if it doesn't exist yet
+		// add ability to create SRPM
+
 		listener.getLogger().println("Running Copr plugin");
 
 		if (build.getResult() != Result.SUCCESS) {
