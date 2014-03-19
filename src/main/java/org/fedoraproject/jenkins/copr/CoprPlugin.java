@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jenkins.model.Jenkins;
+
 import org.fedoraproject.copr.Copr;
 import org.fedoraproject.copr.CoprRepo;
 import org.fedoraproject.copr.CoprUser;
@@ -150,12 +152,19 @@ public class CoprPlugin extends Notifier {
 		try {
 			url = new URL(srpm);
 		} catch (MalformedURLException e) {
-			String jobUrl = build.getEnvironment(listener).get("JOB_URL");
-			if (jobUrl == null) {
+			// TODO: what's wrong with JOB_URL?
+			String jenkinsUrl = build.getEnvironment(listener).get(
+					"JENKINS_URL");
+			String jobName = build.getEnvironment(listener).get("JOB_NAME");
+			if (jenkinsUrl == null || jobName == null) {
 				// something's really wrong
-				throw new AssertionError("JOB_URL is not specified");
+				throw new AssertionError(
+						String.format(
+								"JENKINS_URL or JOB_NAME env. variable is not set (%s, %s)",
+								String.valueOf(jenkinsUrl),
+								String.valueOf(jobName)));
 			}
-			url = new URL(jobUrl);
+			url = new URL(jenkinsUrl + "/job/" + jobName + "/ws/");
 			url = new URL(url, srpm);
 		}
 
