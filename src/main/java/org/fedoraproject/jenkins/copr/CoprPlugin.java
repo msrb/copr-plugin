@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import jenkins.model.Jenkins;
-
 import org.fedoraproject.copr.Copr;
 import org.fedoraproject.copr.CoprRepo;
 import org.fedoraproject.copr.CoprUser;
