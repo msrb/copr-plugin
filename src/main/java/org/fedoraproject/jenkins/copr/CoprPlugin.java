@@ -81,7 +81,6 @@ public class CoprPlugin extends Notifier {
 
 		// TODO:
 		// create repository in Copr if it doesn't exist yet
-		// add ability to create SRPM
 
 		listener.getLogger().println("Running Copr plugin");
 
