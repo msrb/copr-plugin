@@ -11,7 +11,7 @@
     <f:textbox />
   </f:entry>
 
-  <f:entry title="SRPM URL" field="srpm" description="May contain Jenkins environment variables">
+  <f:entry title="SRPM URL" field="srpm">
     <f:textbox />
   </f:entry>
 
