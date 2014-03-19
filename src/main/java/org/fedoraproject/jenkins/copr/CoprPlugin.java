@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.fedoraproject.copr.Copr;
+import org.fedoraproject.copr.CoprBuild;
+import org.fedoraproject.copr.CoprBuild.CoprBuildStatus;
 import org.fedoraproject.copr.CoprRepo;
 import org.fedoraproject.copr.CoprUser;
 import org.fedoraproject.copr.exception.CoprException;
@@ -65,11 +67,13 @@ public class CoprPlugin extends Notifier {
 	private final String apiurl;
 	private final String srpmscript;
 	private final boolean prepareSrpm;
+	private final String coprTimeout;
+	private final boolean waitForCoprBuild;
 
 	@DataBoundConstructor
 	public CoprPlugin(String coprname, String username, String srpm,
 			String apilogin, String apitoken, String apiurl, String srpmscript,
-			boolean prepareSrpm) {
+			boolean prepareSrpm, String coprTimeout, boolean waitForCoprBuild) {
 		this.coprname = coprname;
 		this.username = username;
 		this.srpm = srpm;
@@ -78,6 +82,8 @@ public class CoprPlugin extends Notifier {
 		this.apiurl = apiurl;
 		this.srpmscript = srpmscript;
 		this.prepareSrpm = prepareSrpm;
+		this.coprTimeout = coprTimeout;
+		this.waitForCoprBuild = waitForCoprBuild;
 	}
 
 	@Override
@@ -112,6 +118,7 @@ public class CoprPlugin extends Notifier {
 		URL srpmurl = getSrpmUrl(srpmstr, build, listener);
 
 		Copr copr = new Copr(apiurl);
+		CoprBuild coprBuild;
 
 		try {
 			CoprUser user = copr.getUser(username, apilogin, apitoken);
@@ -119,12 +126,18 @@ public class CoprPlugin extends Notifier {
 
 			List<String> srpms = new ArrayList<String>();
 			srpms.add(srpmurl.toString());
-			repo.addNewBuild(srpms);
+			coprBuild = repo.addNewBuild(srpms);
 
 			listener.getLogger().println("New Copr job has been scheduled");
 		} catch (CoprException e) {
 			listener.getLogger().println(e);
 			return false;
+		}
+
+		if (waitForCoprBuild) {
+			if (!waitForCoprBuild(coprBuild, listener)) {
+				return false;
+			}
 		}
 
 		return true;
@@ -169,6 +182,52 @@ public class CoprPlugin extends Notifier {
 		return url;
 	}
 
+	private boolean waitForCoprBuild(CoprBuild coprBuild, BuildListener listener)
+			throws InterruptedException {
+
+		// total time to wait for Copr to finish the build (in seconds)
+		long timeout = Long.parseLong(coprTimeout) * 60;
+
+		listener.getLogger().println(
+				"Waiting for Copr to finish the build (" + coprTimeout
+						+ " minutes)");
+
+		CoprBuildStatus bstatus = CoprBuildStatus.PENDING;
+		while (bstatus == CoprBuildStatus.PENDING
+				|| bstatus == CoprBuildStatus.RUNNING) {
+
+			if (timeout >= 60) {
+				Thread.sleep(60000);
+				timeout -= 60;
+			} else if (timeout > 0) {
+				Thread.sleep(timeout * 1000);
+				timeout = 0;
+			} else {
+				listener.getLogger().println(
+						"Time is up. Copr hasn't finished the build yet.");
+				return false;
+			}
+
+			try {
+				bstatus = coprBuild.getStatut();
+			} catch (CoprException e) {
+				listener.getLogger().println(e);
+				return false;
+			}
+
+			listener.getLogger().println(
+					"Copr build status: " + bstatus.toString());
+		}
+
+		if (bstatus != CoprBuildStatus.SUCCEEDED) {
+			listener.getLogger().println(
+					"Copr build failed: " + bstatus.toString());
+			return false;
+		}
+
+		return true;
+	}
+
 	public BuildStepMonitor getRequiredMonitorService() {
 		return BuildStepMonitor.NONE;
 	}
@@ -203,6 +262,14 @@ public class CoprPlugin extends Notifier {
 
 	public boolean getPrepareSrpm() {
 		return prepareSrpm;
+	}
+
+	public String getCoprTimeout() {
+		return coprTimeout;
+	}
+
+	public boolean getWaitForCoprBuild() {
+		return waitForCoprBuild;
 	}
 
 	@Extension
