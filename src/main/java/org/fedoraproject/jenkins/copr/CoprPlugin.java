@@ -62,10 +62,12 @@ public class CoprPlugin extends Notifier {
 	private final String apitoken;
 	private final String apiurl;
 	private final String srpmscript;
+	private final boolean prepareSrpm;
 
 	@DataBoundConstructor
 	public CoprPlugin(String coprname, String username, String srpm,
-			String apilogin, String apitoken, String apiurl, String srpmscript) {
+			String apilogin, String apitoken, String apiurl, String srpmscript,
+			boolean prepareSrpm) {
 		this.coprname = coprname;
 		this.username = username;
 		this.srpm = srpm;
@@ -73,6 +75,7 @@ public class CoprPlugin extends Notifier {
 		this.apitoken = apitoken;
 		this.apiurl = apiurl;
 		this.srpmscript = srpmscript;
+		this.prepareSrpm = prepareSrpm;
 	}
 
 	@Override
@@ -92,12 +95,14 @@ public class CoprPlugin extends Notifier {
 			return true;
 		}
 
-		Result srpmres = prepareSRPM(build, launcher, listener);
+		if (prepareSrpm) {
+			Result srpmres = prepareSrpm(build, launcher, listener);
 
-		listener.getLogger().println("Copr plugin: " + srpmres.toString());
+			listener.getLogger().println("Copr plugin: " + srpmres.toString());
 
-		if (srpmres != Result.SUCCESS) {
-			return false;
+			if (srpmres != Result.SUCCESS) {
+				return false;
+			}
 		}
 
 		EnvVars env = build.getEnvironment(listener);
@@ -122,7 +127,7 @@ public class CoprPlugin extends Notifier {
 		return true;
 	}
 
-	private Result prepareSRPM(AbstractBuild<?, ?> build, Launcher launcher,
+	private Result prepareSrpm(AbstractBuild<?, ?> build, Launcher launcher,
 			BuildListener listener) throws InterruptedException {
 		CommandInterpreter shell;
 		if (launcher.isUnix()) {
@@ -165,6 +170,10 @@ public class CoprPlugin extends Notifier {
 
 	public String getSrpmscript() {
 		return srpmscript;
+	}
+
+	public boolean getPrepareSrpm() {
+		return prepareSrpm;
 	}
 
 	@Extension

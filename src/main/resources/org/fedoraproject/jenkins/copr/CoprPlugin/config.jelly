@@ -23,6 +23,10 @@
     <f:textbox />
   </f:entry>
 
+  <f:entry title="" field="prepareSrpm">
+    <f:checkbox title="Prepare SRPM manually" default="false" />
+  </f:entry>
+
   <f:entry title="Prepare SRPM" field="srpmscript">
     <f:textarea />
   </f:entry>
