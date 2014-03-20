@@ -12,6 +12,14 @@
 	<version>0.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
+	<licenses>
+		<license>
+			<name>The MIT license</name>
+			<url>http://www.opensource.org/licenses/mit-license</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.fedoraproject.copr</groupId>
