@@ -161,6 +161,7 @@ public class CoprPlugin extends Notifier {
 			BuildListener listener) throws IOException, InterruptedException {
 
 		URL url;
+		// TODO: add some URL validation
 		try {
 			url = new URL(srpmurl);
 		} catch (MalformedURLException e) {
