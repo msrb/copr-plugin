@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.fedoraproject.jenkins.copr;
+package org.fedoraproject.jenkins.plugins.copr;
 
 import hudson.EnvVars;
 import hudson.Extension;
