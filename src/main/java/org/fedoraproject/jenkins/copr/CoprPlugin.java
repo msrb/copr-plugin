@@ -54,6 +54,18 @@ import org.fedoraproject.copr.CoprUser;
 import org.fedoraproject.copr.exception.CoprException;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+
+/**
+ * Plugin for building RPM packages in Copr.
+ * 
+ * Copr is a lightweight buildsystem that allows users to create packages, put
+ * them into repositories, and make it easy for other users to install them.
+ * 
+ * @see <a
+ *      href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
+ * 
+ * @author Michal Srb
+ */
 public class CoprPlugin extends Notifier {
 
 	protected static final Logger LOGGER = Logger.getLogger(CoprPlugin.class
