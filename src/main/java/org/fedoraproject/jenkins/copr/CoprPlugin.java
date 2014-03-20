@@ -94,6 +94,7 @@ public class CoprPlugin extends Notifier {
 		// create repository in Copr if it doesn't exist yet
 		// add button to check if provided information are correct (API URL,
 		// credentials?)
+		// credentials-plugin
 
 		listener.getLogger().println("Running Copr plugin");
 
