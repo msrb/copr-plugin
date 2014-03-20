@@ -36,6 +36,6 @@
   </f:entry>
 
   <f:entry title="Waiting period (in minutes)" field="coprTimeout">
-    <f:textbox />
+    <f:textbox default="30" />
   </f:entry>
 </j:jelly>
