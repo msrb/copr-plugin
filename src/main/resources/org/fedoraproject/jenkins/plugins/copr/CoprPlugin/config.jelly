@@ -1,41 +1,41 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <f:entry title="API URL" field="apiurl">
+  <f:entry title="${%API URL}" field="apiurl">
     <f:textbox />
   </f:entry>
 
-  <f:entry title="Username" field="username">
+  <f:entry title="${%Username}" field="username">
     <f:textbox />
   </f:entry>
 
-  <f:entry title="Coprname" field="coprname">
+  <f:entry title="${%Coprname}" field="coprname">
     <f:textbox />
   </f:entry>
 
-  <f:entry title="API login" field="apilogin">
+  <f:entry title="${%API login}" field="apilogin">
     <f:password />
   </f:entry>
 
-  <f:entry title="API token" field="apitoken">
+  <f:entry title="${%API token}" field="apitoken">
     <f:password />
   </f:entry>
 
-  <f:entry title="SRPM URL" field="srpm">
+  <f:entry title="${%SRPM URL}" field="srpm">
     <f:textbox />
   </f:entry>
 
   <f:entry title="" field="prepareSrpm">
-    <f:checkbox title="Prepare SRPM manually" default="false" />
+    <f:checkbox title="${%Prepare SRPM manually}" default="false" />
   </f:entry>
 
-  <f:entry title="Prepare SRPM" field="srpmscript">
+  <f:entry title="${%Prepare SRPM}" field="srpmscript">
     <f:textarea />
   </f:entry>
 
   <f:entry title="" field="waitForCoprBuild">
-    <f:checkbox title="Wait for Copr to finish the build" default="false" />
+    <f:checkbox title="${%Wait for Copr to finish the build}" default="false" />
   </f:entry>
 
-  <f:entry title="Waiting period (in minutes)" field="coprTimeout">
+  <f:entry title="${%Waiting period} (${%in minutes)}" field="coprTimeout">
     <f:textbox default="30" />
   </f:entry>
 </j:jelly>
