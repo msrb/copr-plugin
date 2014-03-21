@@ -60,8 +60,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * Copr is a lightweight buildsystem that allows users to create packages, put
  * them into repositories, and make it easy for other users to install them.
  * 
- * @see <a
- *      href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
+ * @see <a href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
  * 
  * @author Michal Srb
  */
