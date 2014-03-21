@@ -12,6 +12,14 @@
 	<version>0.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.fedoraproject.copr</groupId>
+			<artifactId>copr-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
 	<licenses>
 		<license>
 			<name>The MIT license</name>
@@ -20,13 +28,11 @@
 		</license>
 	</licenses>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.fedoraproject.copr</groupId>
-			<artifactId>copr-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+	<scm>
+		<connection>scm:git:ssh://github.com/jenkinsci/copr.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/copr.git</developerConnection>
+		<url>https://github.com/jenkinsci/copr</url>
+	</scm>
 
 	<developers>
 		<developer>
