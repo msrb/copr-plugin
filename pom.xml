@@ -12,6 +12,8 @@
 	<version>0.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
+	<url>http://wiki.jenkins-ci.org/display/JENKINS/copr</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.fedoraproject.copr</groupId>
