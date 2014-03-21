@@ -28,6 +28,14 @@
 		</dependency>
 	</dependencies>
 
+	<developers>
+		<developer>
+			<id>msrb</id>
+			<name>Michal Srb</name>
+			<email>msrb@redhat.com</email>
+		</developer>
+	</developers>
+
 	<repositories>
 		<repository>
 			<id>repo.jenkins-ci.org</id>
