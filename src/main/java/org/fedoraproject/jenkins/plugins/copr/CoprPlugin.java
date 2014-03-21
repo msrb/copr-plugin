@@ -69,6 +69,8 @@ public class CoprPlugin extends Notifier {
 	protected static final Logger LOGGER = Logger.getLogger(CoprPlugin.class
 			.getName());
 
+	private static final String LOG_PREFIX = "Copr plugin: ";
+
 	private final String coprname;
 	private final String username;
 	private final String srpm;
@@ -106,10 +108,10 @@ public class CoprPlugin extends Notifier {
 		// credentials?)
 		// credentials-plugin
 
-		listener.getLogger().println("Running Copr plugin");
+		listener.getLogger().println(LOG_PREFIX + "Running Copr plugin");
 
 		if (build.getResult() != Result.SUCCESS) {
-			listener.getLogger().println(
+			listener.getLogger().println(LOG_PREFIX +
 					"Build was unsuccessful. Nothing to build in Copr.");
 			return true;
 		}
@@ -117,7 +119,7 @@ public class CoprPlugin extends Notifier {
 		if (prepareSrpm) {
 			Result srpmres = prepareSrpm(build, launcher, listener);
 
-			listener.getLogger().println("Copr plugin: " + srpmres.toString());
+			listener.getLogger().println(LOG_PREFIX + srpmres.toString());
 
 			if (srpmres != Result.SUCCESS) {
 				return false;
@@ -139,7 +141,7 @@ public class CoprPlugin extends Notifier {
 			srpms.add(srpmurl.toString());
 			coprBuild = repo.addNewBuild(srpms);
 
-			listener.getLogger().println("New Copr job has been scheduled");
+			listener.getLogger().println(LOG_PREFIX + "New Copr job has been scheduled");
 		} catch (CoprException e) {
 			listener.getLogger().println(e);
 			return false;
@@ -179,7 +181,8 @@ public class CoprPlugin extends Notifier {
 			if (jobUrl == null) {
 				// oops
 				throw new AssertionError(
-						String.format("JOB_URL env. variable is not set"));
+						String.format(LOG_PREFIX +
+								"JOB_URL env. variable is not set"));
 			}
 			url = new URL(jobUrl + "/ws/");
 			url = new URL(url, srpmurl);
@@ -195,7 +198,8 @@ public class CoprPlugin extends Notifier {
 		long timeout = Long.parseLong(coprTimeout) * 60;
 
 		listener.getLogger().println(
-				"Waiting for Copr to finish the build (" + coprTimeout
+				LOG_PREFIX + "Waiting for Copr to finish the build ("
+						+ coprTimeout
 						+ " minutes)");
 
 		CoprBuildStatus bstatus = CoprBuildStatus.PENDING;
@@ -203,14 +207,15 @@ public class CoprPlugin extends Notifier {
 				|| bstatus == CoprBuildStatus.RUNNING) {
 
 			if (timeout >= 60) {
+				// check every 60 seconds if build finished yet
 				Thread.sleep(60000);
 				timeout -= 60;
 			} else if (timeout > 0) {
 				Thread.sleep(timeout * 1000);
 				timeout = 0;
 			} else {
-				listener.getLogger().println(
-						"Time is up. Copr hasn't finished the build yet.");
+				listener.getLogger().println(LOG_PREFIX +
+						"Time is up and Copr hasn't finished the build yet.");
 				return false;
 			}
 
@@ -221,13 +226,13 @@ public class CoprPlugin extends Notifier {
 				return false;
 			}
 
-			listener.getLogger().println(
-					"Copr build status: " + bstatus.toString());
+			listener.getLogger().println(LOG_PREFIX +
+					"build status is " + bstatus.toString());
 		}
 
 		if (bstatus != CoprBuildStatus.SUCCEEDED) {
 			listener.getLogger().println(
-					"Copr build failed: " + bstatus.toString());
+					LOG_PREFIX + "build failed: " + bstatus.toString());
 			return false;
 		}
 
