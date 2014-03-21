@@ -54,7 +54,6 @@ import org.fedoraproject.copr.CoprUser;
 import org.fedoraproject.copr.exception.CoprException;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-
 /**
  * Plugin for building RPM packages in Copr.
  * 
@@ -177,19 +176,13 @@ public class CoprPlugin extends Notifier {
 		try {
 			url = new URL(srpmurl);
 		} catch (MalformedURLException e) {
-			// TODO: what's wrong with JOB_URL?
-			String jenkinsUrl = build.getEnvironment(listener).get(
-					"JENKINS_URL");
-			String jobName = build.getEnvironment(listener).get("JOB_NAME");
-			if (jenkinsUrl == null || jobName == null) {
-				// something's really wrong
+			String jobUrl = build.getEnvironment(listener).get("JOB_URL");
+			if (jobUrl == null) {
+				// oops
 				throw new AssertionError(
-						String.format(
-								"JENKINS_URL or JOB_NAME env. variable is not set (%s, %s)",
-								String.valueOf(jenkinsUrl),
-								String.valueOf(jobName)));
+						String.format("JOB_URL env. variable is not set"));
 			}
-			url = new URL(jenkinsUrl + "/job/" + jobName + "/ws/");
+			url = new URL(jobUrl + "/ws/");
 			url = new URL(url, srpmurl);
 		}
 
