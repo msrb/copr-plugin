@@ -57,9 +57,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/jenkinsci/copr.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/copr.git</developerConnection>
-		<url>https://github.com/jenkinsci/copr</url>
+		<connection>scm:git:ssh://github.com/jenkinsci/copr-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/copr-plugin.git</developerConnection>
+		<url>https://github.com/jenkinsci/copr-plugin</url>
 	</scm>
 
 	<distributionManagement>
