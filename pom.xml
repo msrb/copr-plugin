@@ -12,7 +12,7 @@
 	<version>0.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
 
-	<url>http://wiki.jenkins-ci.org/display/JENKINS/copr</url>
+	<url>http://wiki.jenkins-ci.org/display/JENKINS/Copr+Plugin</url>
 
 	<dependencies>
 		<dependency>
