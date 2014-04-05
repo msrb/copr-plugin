@@ -11,6 +11,8 @@
 	<artifactId>copr</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
+	<name>Jenkins Copr plugin</name>
+	<description>Plugin for building RPM packages in Copr</description>
 
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/Copr+Plugin</url>
 
