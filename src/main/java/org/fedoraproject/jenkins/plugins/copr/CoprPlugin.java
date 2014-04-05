@@ -42,16 +42,10 @@ import hudson.tasks.Shell;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.fedoraproject.copr.Copr;
-import org.fedoraproject.copr.CoprBuild;
-import org.fedoraproject.copr.CoprBuild.CoprBuildStatus;
-import org.fedoraproject.copr.CoprRepo;
-import org.fedoraproject.copr.CoprUser;
-import org.fedoraproject.copr.exception.CoprException;
+import org.fedoraproject.jenkins.plugins.copr.CoprBuild.CoprBuildStatus;
+import org.fedoraproject.jenkins.plugins.copr.exception.CoprException;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
@@ -60,7 +54,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * Copr is a lightweight buildsystem that allows users to create packages, put
  * them into repositories, and make it easy for other users to install them.
  * 
- * @see <a href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
+ * @see <a
+ *      href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
  * 
  * @author Michal Srb
  */
@@ -111,8 +106,10 @@ public class CoprPlugin extends Notifier {
 		listener.getLogger().println(LOG_PREFIX + "Running Copr plugin");
 
 		if (build.getResult() != Result.SUCCESS) {
-			listener.getLogger().println(LOG_PREFIX +
-					"Build was unsuccessful. Nothing to build in Copr.");
+			listener.getLogger()
+					.println(
+							LOG_PREFIX
+									+ "Build was unsuccessful. Nothing to build in Copr.");
 			return true;
 		}
 
@@ -130,22 +127,14 @@ public class CoprPlugin extends Notifier {
 		String srpmstr = env.expand(srpm);
 		URL srpmurl = getSrpmUrl(srpmstr, build, listener);
 
-		Copr copr = new Copr(apiurl);
+		CoprClient copr = new CoprClient(apiurl, apilogin, apitoken);
 		CoprBuild coprBuild;
 
-		try {
-			CoprUser user = copr.getUser(username, apilogin, apitoken);
-			CoprRepo repo = user.getRepo(coprname);
+		coprBuild = copr.scheduleBuild(srpmurl.toString(), username,
+				coprname);
 
-			List<String> srpms = new ArrayList<String>();
-			srpms.add(srpmurl.toString());
-			coprBuild = repo.addNewBuild(srpms);
-
-			listener.getLogger().println(LOG_PREFIX + "New Copr job has been scheduled");
-		} catch (CoprException e) {
-			listener.getLogger().println(e);
-			return false;
-		}
+		listener.getLogger().println(
+				LOG_PREFIX + "New Copr job has been scheduled");
 
 		if (waitForCoprBuild) {
 			if (!waitForCoprBuild(coprBuild, listener)) {
@@ -180,9 +169,8 @@ public class CoprPlugin extends Notifier {
 			String jobUrl = build.getEnvironment(listener).get("JOB_URL");
 			if (jobUrl == null) {
 				// oops
-				throw new AssertionError(
-						String.format(LOG_PREFIX +
-								"JOB_URL env. variable is not set"));
+				throw new AssertionError(String.format(LOG_PREFIX
+						+ "JOB_URL env. variable is not set"));
 			}
 			url = new URL(jobUrl + "/ws/");
 			url = new URL(url, srpmurl);
@@ -199,8 +187,7 @@ public class CoprPlugin extends Notifier {
 
 		listener.getLogger().println(
 				LOG_PREFIX + "Waiting for Copr to finish the build ("
-						+ coprTimeout
-						+ " minutes)");
+						+ coprTimeout + " minutes)");
 
 		CoprBuildStatus bstatus = CoprBuildStatus.PENDING;
 		while (bstatus == CoprBuildStatus.PENDING
@@ -214,8 +201,10 @@ public class CoprPlugin extends Notifier {
 				Thread.sleep(timeout * 1000);
 				timeout = 0;
 			} else {
-				listener.getLogger().println(LOG_PREFIX +
-						"Time is up and Copr hasn't finished the build yet.");
+				listener.getLogger()
+						.println(
+								LOG_PREFIX
+										+ "Time is up and Copr hasn't finished the build yet.");
 				return false;
 			}
 
@@ -226,8 +215,8 @@ public class CoprPlugin extends Notifier {
 				return false;
 			}
 
-			listener.getLogger().println(LOG_PREFIX +
-					"build status is " + bstatus.toString());
+			listener.getLogger().println(
+					LOG_PREFIX + "build status is " + bstatus.toString());
 		}
 
 		if (bstatus != CoprBuildStatus.SUCCEEDED) {
