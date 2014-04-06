@@ -54,15 +54,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * Copr is a lightweight buildsystem that allows users to create packages, put
  * them into repositories, and make it easy for other users to install them.
  * 
- * @see <a
- *      href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
+ * @see <a href="https://fedorahosted.org/copr">https://fedorahosted.org/copr</a>
  * 
  * @author Michal Srb
  */
 public class CoprPlugin extends Notifier {
 
-	protected static final Logger LOGGER = Logger.getLogger(CoprPlugin.class
-			.getName());
+	protected static final Logger LOGGER = Logger.getLogger(CoprPlugin.class.getName());
 
 	private static final String LOG_PREFIX = "Copr plugin: ";
 
@@ -106,10 +104,8 @@ public class CoprPlugin extends Notifier {
 		listener.getLogger().println(LOG_PREFIX + "Running Copr plugin");
 
 		if (build.getResult() != Result.SUCCESS) {
-			listener.getLogger()
-					.println(
-							LOG_PREFIX
-									+ "Build was unsuccessful. Nothing to build in Copr.");
+			listener.getLogger().println(LOG_PREFIX
+                  + "Build was unsuccessful. Nothing to build in Copr.");
 			return true;
 		}
 
@@ -130,11 +126,9 @@ public class CoprPlugin extends Notifier {
 		CoprClient copr = new CoprClient(apiurl, apilogin, apitoken);
 		CoprBuild coprBuild;
 
-		coprBuild = copr.scheduleBuild(srpmurl.toString(), username,
-				coprname);
+		coprBuild = copr.scheduleBuild(srpmurl.toString(), username, coprname);
 
-		listener.getLogger().println(
-				LOG_PREFIX + "New Copr job has been scheduled");
+		listener.getLogger().println(LOG_PREFIX + "New Copr job has been scheduled");
 
 		if (waitForCoprBuild) {
 			if (!waitForCoprBuild(coprBuild, listener)) {
@@ -154,8 +148,7 @@ public class CoprPlugin extends Notifier {
 			shell = new BatchFile(srpmscript);
 		}
 
-		return shell.perform(build, launcher, listener) ? Result.SUCCESS
-				: Result.FAILURE;
+		return shell.perform(build, launcher, listener) ? Result.SUCCESS : Result.FAILURE;
 	}
 
 	private URL getSrpmUrl(String srpmurl, AbstractBuild<?, ?> build,
@@ -201,10 +194,8 @@ public class CoprPlugin extends Notifier {
 				Thread.sleep(timeout * 1000);
 				timeout = 0;
 			} else {
-				listener.getLogger()
-						.println(
-								LOG_PREFIX
-										+ "Time is up and Copr hasn't finished the build yet.");
+				listener.getLogger().println(LOG_PREFIX
+						+ "Time is up and Copr hasn't finished the build yet.");
 				return false;
 			}
 
