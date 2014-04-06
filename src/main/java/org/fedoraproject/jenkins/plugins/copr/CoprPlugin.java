@@ -38,6 +38,7 @@ import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import hudson.tasks.BatchFile;
 import hudson.tasks.Shell;
+import hudson.util.FormValidation;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -47,6 +48,7 @@ import java.util.logging.Logger;
 import org.fedoraproject.jenkins.plugins.copr.CoprBuild.CoprBuildStatus;
 import org.fedoraproject.jenkins.plugins.copr.exception.CoprException;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
 /**
  * Plugin for building RPM packages in Copr.
@@ -269,6 +271,15 @@ public class CoprPlugin extends Notifier {
 
 		public DescriptorImpl() {
 			load();
+		}
+
+		public FormValidation doCheckCoprTimeout(@QueryParameter String value) {
+			try {
+				Integer.parseInt(value);
+			} catch (NumberFormatException _) {
+				return FormValidation.error("Not a valid number");
+			}
+			return FormValidation.ok();
 		}
 
 		@Override
