@@ -68,7 +68,7 @@ class CoprClient {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("pkgs", srpmurl));
 
-		String json = doPost(username, coprname, null, buildurl);
+		String json = doPost(username, coprname, params, buildurl);
 
 		CoprResponse resp = new Gson().fromJson(json, CoprResponse.class);
 
