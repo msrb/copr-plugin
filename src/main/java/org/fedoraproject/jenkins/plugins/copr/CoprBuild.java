@@ -40,7 +40,7 @@ class CoprBuild {
 	}
 
 	public CoprBuildStatus getStatut() throws CoprException {
-		String url = "api/coprs/build_status/%d/";
+		String url = "/api/coprs/build_status/%d/";
 
 		String json = copr.doGet(username, String.format(url, id));
 
@@ -73,6 +73,10 @@ class CoprBuild {
 		if (this.copr == null) {
 			this.copr = copr;
 		}
+	}
+
+	void setUsername(String username) {
+		this.username = username;
 	}
 
 	public static enum CoprBuildStatus {

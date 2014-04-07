@@ -129,7 +129,12 @@ public class CoprPlugin extends Notifier {
 		CoprBuild coprBuild;
 
 		String buildurl = apiurl + String.format("/api/coprs/%s/%s/new_build/", username, coprname);
-		coprBuild = copr.scheduleBuild(srpmurl.toString(), username, coprname, buildurl);
+		try {
+			coprBuild = copr.scheduleBuild(srpmurl.toString(), username, coprname, buildurl);
+		} catch (CoprException e) {
+			listener.getLogger().println(e);
+			return false;
+		}
 
 		listener.getLogger().println(LOG_PREFIX + "New Copr job has been scheduled");
 

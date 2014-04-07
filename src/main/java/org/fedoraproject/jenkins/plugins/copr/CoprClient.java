@@ -63,14 +63,25 @@ class CoprClient {
 
 	public CoprBuild scheduleBuild(String srpmurl, String username,
 			String coprname, String buildurl)
-			throws IOException {
+			throws IOException, CoprException {
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("pkgs", srpmurl));
 
 		String json = doPost(username, coprname, null, buildurl);
 
-		return new Gson().fromJson(json, CoprBuild.class);
+		CoprResponse resp = new Gson().fromJson(json, CoprResponse.class);
+
+		CoprBuild coprBuild;
+		if (resp.outputIsOk()) {
+			coprBuild = new CoprBuild(Long.parseLong(resp.getId()));
+			coprBuild.setCoprClient(this);
+			coprBuild.setUsername(username);
+		} else {
+			throw new CoprException(resp.getError());
+		}
+
+		return coprBuild;
 	}
 
 	String doGet(String username, String url) throws CoprException {
