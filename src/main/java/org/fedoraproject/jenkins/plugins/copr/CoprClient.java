@@ -62,13 +62,13 @@ class CoprClient {
 	}
 
 	public CoprBuild scheduleBuild(String srpmurl, String username,
-			String coprname)
+			String coprname, String buildurl)
 			throws IOException {
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("pkgs", srpmurl));
 
-		String json = doPost(username, coprname, null, srpmurl);
+		String json = doPost(username, coprname, null, buildurl);
 
 		return new Gson().fromJson(json, CoprBuild.class);
 	}
