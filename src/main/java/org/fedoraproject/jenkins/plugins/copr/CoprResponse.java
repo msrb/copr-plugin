@@ -31,6 +31,7 @@ public class CoprResponse {
     private String error;
     private String message;
     private String id;
+    private long[] ids;
     private String status;
 
     public String getOutput() {
@@ -47,6 +48,10 @@ public class CoprResponse {
 
     public String getId() {
         return id;
+    }
+
+    public long[] getIds() {
+        return ids;
     }
 
     public String getStatus() {

@@ -74,7 +74,7 @@ class CoprClient {
 
 		CoprBuild coprBuild;
 		if (resp.outputIsOk()) {
-			coprBuild = new CoprBuild(Long.parseLong(resp.getId()));
+			coprBuild = new CoprBuild(resp.getIds()[0]);
 			coprBuild.setCoprClient(this);
 			coprBuild.setUsername(username);
 		} else {
